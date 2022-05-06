@@ -3,10 +3,16 @@ import 'package:cool_stepper/cool_stepper.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:get/get.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import '../../../../common/helper.dart';
+import '../../../../common/ui.dart';
+import '.././models/setting_model.dart';
+import '.././services/settings_service.dart';
 
 class spRegForm extends StatefulWidget {
-  @override
+  final Setting settings = Get.find<SettingsService>().setting.value;
+
   State<spRegForm> createState() => _spRegFormState();
 }
 
@@ -412,13 +418,13 @@ class _spRegFormState extends State<spRegForm> {
                     ),
                     const Text('I have read and accept terms and conditions',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 12))
+                        style: TextStyle(fontSize: 10))
                   ],
                 ),
                 ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.orange)),
+                        backgroundColor: MaterialStateProperty.all(
+                            Get.theme.colorScheme.secondary)),
                     onPressed: agree ? () {} : null,
                     child: const Text('Submit'))
               ],
@@ -470,7 +476,7 @@ class _spRegFormState extends State<spRegForm> {
         ),
         child: RadioListTile(
           value: name,
-          activeColor: Colors.white,
+          activeColor: Colors.orange,
           groupValue: selectedRole,
           onChanged: (String v) {
             setState(() {
@@ -484,8 +490,8 @@ class _spRegFormState extends State<spRegForm> {
           },
           title: Text(
             name,
-            style:
-                TextStyle(color: isActive ? Colors.white : null, fontSize: 12),
+            style: TextStyle(
+                fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
           ),
         ),
       ),
