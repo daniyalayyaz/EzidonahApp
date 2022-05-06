@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cool_stepper/cool_stepper.dart';
 import 'package:otp_text_field/otp_text_field.dart';
@@ -5,10 +7,10 @@ import 'package:otp_text_field/style.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import '../../../../common/helper.dart';
-import '../../../../common/ui.dart';
+import 'package:open_file/open_file.dart';
 import '.././models/setting_model.dart';
 import '.././services/settings_service.dart';
+import 'package:path_provider/path_provider.dart';
 
 class spRegForm extends StatefulWidget {
   final Setting settings = Get.find<SettingsService>().setting.value;
@@ -285,7 +287,18 @@ class _spRegFormState extends State<spRegForm> {
                     },
                   )),
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final PreWorkresult = await FilePicker.platform.pickFiles();
+                    if (PreWorkresult == null) return;
+                    final PreWorkfile = PreWorkresult.files.first;
+                    openFile(PreWorkfile);
+                    await saveFilePermanently(PreWorkfile);
+                    final snackBar = SnackBar(
+                      backgroundColor: Colors.orange,
+                      content: Text('You have selected ${PreWorkfile.name}'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
                   child: Text(
                     'Upload Previous Work',
                     style: TextStyle(color: Colors.white),
@@ -381,7 +394,18 @@ class _spRegFormState extends State<spRegForm> {
                             MaterialStateProperty.all(Colors.orange)),
                     child: Text("ID Document",
                         style: TextStyle(color: Colors.white)),
-                    onPressed: () {},
+                    onPressed: () async {
+                      final Idresult = await FilePicker.platform.pickFiles();
+                      if (Idresult == null) return;
+                      final Idfile = Idresult.files.first;
+                      openFile(Idfile);
+                      await saveFilePermanently(Idfile);
+                      final snackBar = SnackBar(
+                        backgroundColor: Colors.orange,
+                        content: Text('You have selected ${Idfile.name}'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
                   ),
                 ),
                 ElevatedButton(
@@ -390,7 +414,18 @@ class _spRegFormState extends State<spRegForm> {
                           MaterialStateProperty.all(Colors.orange)),
                   child: Text("Stamped Personal Bank Account",
                       style: TextStyle(color: Colors.white)),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final PerBankresult = await FilePicker.platform.pickFiles();
+                    if (PerBankresult == null) return;
+                    final PerBankfile = PerBankresult.files.first;
+                    openFile(PerBankfile);
+                    await saveFilePermanently(PerBankfile);
+                    final snackBar = SnackBar(
+                      backgroundColor: Colors.orange,
+                      content: Text('You have selected ${PerBankfile.name}'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
                 ),
                 if (isBusiness)
                   Container(
@@ -401,7 +436,19 @@ class _spRegFormState extends State<spRegForm> {
                               MaterialStateProperty.all(Colors.orange)),
                       child: Text("Commercial Registeration",
                           style: TextStyle(color: Colors.white)),
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ComRegresult =
+                            await FilePicker.platform.pickFiles();
+                        if (ComRegresult == null) return;
+                        final ComRegfile = ComRegresult.files.first;
+                        openFile(ComRegfile);
+                        await saveFilePermanently(ComRegfile);
+                        final snackBar = SnackBar(
+                          backgroundColor: Colors.orange,
+                          content: Text('You have selected ${ComRegfile.name}'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      },
                     ),
                   ),
                 Row(
@@ -497,4 +544,14 @@ class _spRegFormState extends State<spRegForm> {
       ),
     );
   }
+}
+
+Future<File> saveFilePermanently(PlatformFile file) async {
+  final appStorage = await getApplicationDocumentsDirectory();
+  final newFile = File('${appStorage.path}/${file.name}');
+  return File(file.path).copy(newFile.path);
+}
+
+void openFile(PlatformFile file) {
+  OpenFile.open(file.path);
 }
